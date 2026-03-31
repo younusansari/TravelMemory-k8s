@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+
+  # 🟢 MongoDB
+  mongo:
+    #build: ./mongo
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # 🔵 Backend (Node.js)
+  backend:
+    image: travelmemory-backend:v1.0
+    build:
+      context: ./backend   # 👈 change if folder name different
+    container_name: backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/
+    depends_on:
+      - mongo
+
+  # 🟡 Frontend (React + Nginx)
+  frontend:
+    image: travelmemory-frontend:v1.0
+    build:
+      context: ./frontend   # 👈 change if needed
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

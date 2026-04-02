@@ -1,0 +1,50 @@
+To apply kubernetes files 
+kubectl apply -f .\k8s\.
+
+To delete the deployments
+kubectl delete deployment backend frontend 
+
+To delete the services
+kubectl delete svc backend frontend
+
+Enter to pod
+kubectl exec -it frontend-6f67c9df64-chl8t -- sh
+
+test the connectivity from frontend pod to backend pod
+wget -qO- http://backend:3001/hello
+wget -qO- http://localhost:3001/hello
+wget -qO- http://localhost:30001/hello
+wget -qO- http://192.168.1.2:3001/hello
+wget -qO- http://192.168.1.2:30001/hello
+
+To forward the traffic to localhost
+kubectl port-forward svc/frontend 3000:3000
+
+To restart the deployments
+kubectl rollout restart deployment frontend
+
+kubectl rollout restart deployment backend
+
+Test the backend
+http://localhost:3001/hello
+http://localhost:30001/hello
+
+Test the Frontend
+http://localhost:3000
+
+
+find the port in Windows
+netstat -ano | findstr :3001
+
+Kill the port in Windows
+taskkill /PID 4676 /F
+
+To deploy Firefox browser as pod
+kubectl run browser --image=jlesage/firefox --restart=Never -n travel-app
+To expose Firefox browser on your localhost on port 5800
+kubectl expose pod browser --type=NodePort --port=5800 -n travel-app
+
+browse firefox in your localhost base on Nodeport
+http://localhost:30488/
+
+5800:30488/TCP
